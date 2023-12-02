@@ -57,8 +57,7 @@ class SaveImageDataException(Exception):
     def __init__(self, message="Error during saving image data"):
         self.message = message
         super().__init__(self.message)
-
-
+      
 
 async def save_image_data(imageUpload: ImageUpload):
     try:
