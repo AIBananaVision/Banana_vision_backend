@@ -13,30 +13,34 @@ aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 region_name = os.getenv("REGION_NAME")
 
-# Initializing a SageMaker runtime client
-client = boto3.client('sagemaker-runtime',region_name=region_name,aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+# Initializing a SageMaker runtime client with region
+client = boto3.client('sagemaker-runtime', region_name=region_name)
 
 #  SageMaker endpoint name
 endpoint_name = 'pytorch-inference-2023-12-02-22-34-19-675'  
 
-async def model_infer(image: UploadFile):
+async def model_infer(image_content):
     try:
         print("Uploading image to AWS server...............")
-        # Read image content
-        content = await image.read()
+       
         
         # Inference request
         response = client.invoke_endpoint(
             EndpointName=endpoint_name,
-            Body=content,
+            Body=image_content,
             ContentType='application/x-image',
             Accept='application/json'
         )
 
         # Parsing the response
         result = json.loads(response['Body'].read().decode())
-        print(result)
-        return JSONResponse(content=result)
+        formatted_result = {
+            'predicted_class': result.get('predicted_class', 'Unknown'),
+            'probabilities': result.get('probabilities', {})
+        }
+        print(formatted_result)
+
+        return formatted_result
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

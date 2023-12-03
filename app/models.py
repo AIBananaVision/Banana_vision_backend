@@ -1,3 +1,4 @@
+from typing import Optional, Dict, Union
 from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
@@ -34,9 +35,9 @@ class LocationData(BaseModel):
     address: Optional[str] = None
 
 class ImageUpload(BaseModel):
-    image_url: str = None
-    location: LocationData = None
-    disease_class: str = "healthy"
+    image_url: str
+    location: LocationData
+    
 
  
     
