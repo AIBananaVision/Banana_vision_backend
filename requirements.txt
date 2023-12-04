@@ -3,7 +3,7 @@ uvicorn
 python-multipart
 cloudinary
 python-dotenv
-bson
+# bson
 pymongo
 motor
 boto3

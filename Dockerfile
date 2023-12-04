@@ -1,27 +1,17 @@
-# Use the official Python image as the base image for building
-FROM python:3.9-slim as builder
+FROM python:3.11
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-#Add .env file
-COPY .env .
+COPY ./docker_requirements.txt .
 
-# Copy the entire project directory to the container
-COPY . .
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r docker_requirements.txt
 
-# Use a smaller base image for the final image
-FROM python:3.9-slim
-
-WORKDIR /app
-
-# Copy only necessary files from the builder stage
-COPY --from=builder /app .
+COPY ./app .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
-
-
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
