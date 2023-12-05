@@ -32,7 +32,7 @@ class LocationData(BaseModel):
     countryName: Optional[str] = None
     locality: Optional[str] = None
     address: Optional[str] = None
-    address: Optional[str] = None
+    
 
 class ImageUpload(BaseModel):
     image_url: str
