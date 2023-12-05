@@ -70,23 +70,20 @@ class SaveImageDataException(Exception):
 async def save_image_data(imageUpload: ImageUpload, model_results: dict):
     try:
         # Your save logic here
-        print("Model results: ",model_results)
+  
         disease_class = model_results.get('predicted_class')
         probabilities = model_results.get('probabilities')
-
-        print("Image URL:", imageUpload.image_url)
-        print("Location:", imageUpload.location.dict())
-        print("Disease Class:", disease_class)
-        print("Probabilities:", probabilities)
-
+        LocationData = imageUpload.location.dict()
+     
         document = {
             "image_url": imageUpload.image_url,
-            "location": imageUpload.location.dict(),
+            "location": LocationData,
             "disease_class": disease_class,
             "probabilities": probabilities
         }
+        print("Document:", document)
         result = collection.insert_one(document)
-        print(f"Image data saved with id: {result.inserted_id}")
+        print(f"data saved with id: {result.inserted_id}")
 
     except Exception as e:
         raise SaveImageDataException(f"{str(e)}")
